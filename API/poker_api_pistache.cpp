@@ -2,7 +2,7 @@
 #include <pistache/router.h>
 #include <pistache/http.h>
 #include <pistache/net.h>
-#include <nlohmann/json.hpp>
+#include "external/json.hpp"
 #include <unordered_map>
 #include <unordered_set>
 #include <string>
