@@ -22,7 +22,7 @@ void sendJson(Http::ResponseWriter res, Http::Code code, const json& body) {
 
 std::string qp(const Rest::Request& req, const std::string& key, const std::string& def) {
     auto v = req.query().get(key);
-    if (v) return v.get();
+    if (v) return v.value();
     return def;
 }
 

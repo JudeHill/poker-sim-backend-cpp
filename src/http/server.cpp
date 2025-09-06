@@ -7,8 +7,7 @@ PokerApiServer::PokerApiServer(Address addr)
 
 void PokerApiServer::init(size_t threads) {
     auto opts = Http::Endpoint::options()
-        .threads(static_cast<int>(threads))
-        .flags(Tcp::Options::InstallSignalHandler);
+        .threads(static_cast<int>(threads));
     httpEndpoint_->init(opts);
     setupRoutes();
 }
@@ -16,9 +15,9 @@ void PokerApiServer::init(size_t threads) {
 void PokerApiServer::setupRoutes() {
     // CORS preflight
     Rest::Routes::Options(router_, "/:any",
-        [](const Rest::Request&, Http::ResponseWriter res){ HttpHelpers::cors(res); res.send(Http::Code::Ok); });
+        [](const Rest::Request&, Http::ResponseWriter res){ HttpHelpers::cors(res); res.send(Http::Code::Ok); return Rest::Route::Result::Ok; });
     Rest::Routes::Options(router_, "/v1/:any+",
-        [](const Rest::Request&, Http::ResponseWriter res){ HttpHelpers::cors(res); res.send(Http::Code::Ok); });
+        [](const Rest::Request&, Http::ResponseWriter res){ HttpHelpers::cors(res); res.send(Http::Code::Ok); return Rest::Route::Result::Ok; });
 
     // Controllers
     PlayersController players(store_); players.registerRoutes(router_);
@@ -30,6 +29,7 @@ void PokerApiServer::setupRoutes() {
     Rest::Routes::Get(router_, "/health",
         [](const Rest::Request&, Http::ResponseWriter res){
             HttpHelpers::sendJson(std::move(res), Http::Code::Ok, {{"status","ok"}});
+            return Rest::Route::Result::Ok;
         });
 }
 
